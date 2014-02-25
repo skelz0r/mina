@@ -18,13 +18,14 @@
 # ## Settings
 # Any and all of these settings can be overriden in your `deploy.rb`.
 
-# ### rvm_path
+# ### rvm_path_for_mina
 # Sets the path to RVM.
 #
 # You can override this in your projects if RVM is installed in a different
 # path, say, if you have a system-wide RVM install.
+# NB: rvm_path is already defined for a system wide install of rvm
 
-set_default :rvm_path, "$HOME/.rvm/scripts/rvm"
+set_default :rvm_path_for_mina, "$HOME/.rvm/scripts/rvm"
 
 # ## Tasks
 
@@ -46,13 +47,13 @@ task :'rvm:use', :env do |t, args|
 
   queue %{
     echo "-----> Using RVM environment '#{args[:env]}'"
-    if [[ ! -s "#{rvm_path}" ]]; then
+    if [[ ! -s "#{rvm_path_for_mina}" ]]; then
       echo "! Ruby Version Manager not found"
-      echo "! If RVM is installed, check your :rvm_path setting."
+      echo "! If RVM is installed, check your :rvm_path_for_mina setting."
       exit 1
     fi
 
-    source #{rvm_path}
+    source #{rvm_path_for_mina}
     #{echo_cmd %{rvm use "#{args[:env]}" --create}} || exit 1
   }
 end
@@ -76,13 +77,13 @@ task :'rvm:wrapper', :env, :name, :bin do |t,args|
 
   queue %{
     echo "-----> creating RVM wrapper '#{args[:name]}_#{args[:bin]}' using '#{args[:env]}'"
-    if [[ ! -s "#{rvm_path}" ]]; then
+    if [[ ! -s "#{rvm_path_for_mina}" ]]; then
       echo "! Ruby Version Manager not found"
-      echo "! If RVM is installed, check your :rvm_path setting."
+      echo "! If RVM is installed, check your :rvm_path_for_mina setting."
       exit 1
     fi
 
-    source #{rvm_path}
+    source #{rvm_path_for_mina}
     #{echo_cmd %{rvm wrapper #{args[:env]} #{args[:name]} #{args[:bin]} }} || exit 1
   }
 end
